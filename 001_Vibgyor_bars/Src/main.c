@@ -29,7 +29,7 @@ void SystemClock_Setup(void);
 
 int main(void) {
 	SystemClock_Setup();
-    /* Loop forever */
+    /* Loop forever even all time */
 	for(;;);
 }
 
