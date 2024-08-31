@@ -50,6 +50,7 @@ void BSP_LCD_Init(void) {
 	LCD_SPI_Init();
 	LCD_Reset();
 	LCD_Config();
+
 }
 
 
