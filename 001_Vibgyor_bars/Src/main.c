@@ -26,16 +26,14 @@
 
 void SystemClock_Setup(void);
 
-int main(void)
-{
+int main(void) {
 	SystemClock_Setup();
     /* Loop forever */
 	for(;;);
 }
 
 
-void SystemClock_Setup(void)
-{
+void SystemClock_Setup(void) {
 	RCC_TypeDef* pRCC = RCC;
 	FLASH_TypeDef* pFlash = FLASH;
 	PWR_TypeDef* pPWR = PWR;
