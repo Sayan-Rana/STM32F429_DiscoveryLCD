@@ -29,6 +29,7 @@ void SystemClock_Setup(void);
 
 int main(void) {
 	SystemClock_Setup();
+	BSP_LCD_Init();
     /* Loop forever even all time */
 	for(;;);
 }
