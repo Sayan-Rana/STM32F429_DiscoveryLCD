@@ -32,6 +32,7 @@ static void LCD_Pin_Init(void);
 static void LCD_SPI_Init(void);
 static void LCD_Reset(void);
 static void LCD_Config(void);
+static void LCD_SPI_Enable(void);
 
 
 /* Defining all the LCD signals */
@@ -69,6 +70,7 @@ static void LCD_Config(void);
 void BSP_LCD_Init(void) {
 	LCD_Pin_Init();
 	LCD_SPI_Init();
+	LCD_SPI_Enable();
 	LCD_Reset();
 	LCD_Config();
 }
@@ -123,7 +125,23 @@ void LCD_Pin_Init(void) {
 
 
 void LCD_SPI_Init(void) {
+	SPI_TypeDef* pSPI = SPI;
+	RCC_TypeDef* pRCC = RCC;
 
+	/* Enable SPI5 peripheral clock */
+	REG_SET_BIT(pRCC->APB2ENR, RCC_APB2ENR_SPI5EN_Pos);						// Enabling APB2 SPI5 peripheral clock
+
+	/* Configure SPI as master in half-duplex MOTOROLA mode */
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_BIDIMODE_Pos);							// BIDI mode enable(half-duplex)
+	REG_CLR_BIT(pSPI->CR1, SPI_CR1_DFF_Pos);								// Data frame format 8 bit is selected
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_SSM_Pos);								// Enabling software slave management
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_SSI_Pos);								// Setting NSS pin high manually
+	REG_CLR_BIT(pSPI->CR1, SPI_CR1_LSBFIRST_Pos);							// Configuring MSB first frame format
+	REG_SET_VAL(pSPI->CR1, 0x03, 0x07, SPI_CR1_BR_Pos);						// Configuring SPI baud rate as 5.625MHz(90/16)
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_MSTR_Pos);								// Configuring SPI as master
+	REG_CLR_BIT(pSPI->CR1, SPI_CR1_CPOL_Pos);								// Setting clock polarity 0(Clock low when idle)
+	REG_CLR_BIT(pSPI->CR1, SPI_CR1_CPHA_Pos);								// Setting clock phase 0(Capture in rising edge)
+	REG_CLR_BIT(pSPI->CR2, SPI_CR2_FRF_Pos);								// Enabling SPI MOTOROLA mode
 }
 
 
@@ -137,4 +155,15 @@ void LCD_Reset(void) {
 void LCD_Config(void) {
 
 }
+
+
+
+void LCD_SPI_Enable(void)
+{
+	SPI_TypeDef* pSPI = SPI;
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_SPE_Pos);								// SPI enable
+}
+
+
+
 
