@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include "stm32f429xx.h"
 #include "reg_util.h"
+#include "bsp_lcd.h"
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
@@ -26,16 +27,15 @@
 
 void SystemClock_Setup(void);
 
-int main(void)
-{
+int main(void) {
 	SystemClock_Setup();
-    /* Loop forever */
+	BSP_LCD_Init();
+    /* Loop forever even all time */
 	for(;;);
 }
 
 
-void SystemClock_Setup(void)
-{
+void SystemClock_Setup(void) {
 	RCC_TypeDef* pRCC = RCC;
 	FLASH_TypeDef* pFlash = FLASH;
 	PWR_TypeDef* pPWR = PWR;
