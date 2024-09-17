@@ -144,7 +144,6 @@ void LCD_Pin_Init(void) {
 	REG_SET_VAL(pGPIOF->AFR[0], 0x05u, 0x0Fu, GPIO_AFRL_AFSEL7_Pos);        // Alternate function 5 (SPI5 SCK)
 
 	/* SPI(5) SDA pin PF9 */
-<<<<<<< HEAD
 	REG_SET_VAL(pGPIOF->MODER, 0x02u, 0x03u, GPIO_MODER_MODER9_Pos);		// Output mode
 	REG_CLR_BIT(pGPIOF->OTYPER, GPIO_OTYPER_OT9_Pos);						// Output type output push pull
 	REG_SET_VAL(pGPIOF->OSPEEDR, 0x02u, 0x03u, GPIO_OSPEEDR_OSPEED9_Pos);	// Speed as high speed
@@ -154,7 +153,7 @@ void LCD_Pin_Init(void) {
 	REG_SET_BIT(pGPIOA->ODR, GPIO_ODR_OD7_Pos);                             // Setting RESX pin high
 	REG_SET_BIT(pGPIOC->ODR, GPIO_ODR_OD2_Pos);                             // Setting CSX pin high
 	REG_SET_BIT(pGPIOD->ODR, GPIO_ODR_OD13_Pos);                            // Setting DCX pin high
-=======
+
 	REG_SET_VAL(pGPIOF->MODER, 0x02u, 0x03u, GPIO_MODER_MODER9_Pos);        // Output mode
 	REG_CLR_BIT(pGPIOF->OTYPER, GPIO_OTYPER_OT9_Pos);                       // Output type output push pull
 	REG_SET_VAL(pGPIOF->OSPEEDR, 0x02u, 0x03u, GPIO_OSPEEDR_OSPEED9_Pos);   // Speed as high speed
@@ -164,8 +163,6 @@ void LCD_Pin_Init(void) {
 	REG_SET_BIT(pGPIOA->ODR, GPIO_ODR_OD7_Pos);                             // Setting RESX pin high
 	REG_SET_BIT(pGPIOC->ODR, GPIO_ODR_OD2_Pos);                             // Setting CSX pin high
 	REG_SET_BIT(pGPIOD->ODR, GPIO_ODR_OD13_Pos);                            // Setting DCX pin high
-
->>>>>>> refs/remotes/origin/main
 }
 
 
@@ -178,7 +175,6 @@ void LCD_SPI_Init(void) {
 	REG_SET_BIT(pRCC->APB2ENR, RCC_APB2ENR_SPI5EN_Pos);                     // Enabling APB2 SPI5 peripheral clock
 
 	/* Configure SPI as master in half-duplex MOTOROLA mode */
-<<<<<<< HEAD
 	REG_SET_BIT(pSPI->CR1, SPI_CR1_BIDIMODE_Pos);							// BIDI mode enable(half-duplex)
 	REG_SET_BIT(pSPI->CR1, SPI_CR1_BIDIOE_Pos);                             // In BIDI mode transmit only mode is selected
 	REG_CLR_BIT(pSPI->CR1, SPI_CR1_DFF_Pos);								// Data frame format 8 bit is selected
@@ -190,7 +186,6 @@ void LCD_SPI_Init(void) {
 	REG_CLR_BIT(pSPI->CR1, SPI_CR1_CPOL_Pos);								// Setting clock polarity 0(Clock low when idle)
 	REG_CLR_BIT(pSPI->CR1, SPI_CR1_CPHA_Pos);								// Setting clock phase 0(Capture in rising edge)
 	REG_CLR_BIT(pSPI->CR2, SPI_CR2_FRF_Pos);								// Enabling SPI MOTOROLA mode
-=======
 	REG_SET_BIT(pSPI->CR1, SPI_CR1_BIDIMODE_Pos);                           // BIDI mode enable(half-duplex)
 	REG_CLR_BIT(pSPI->CR1, SPI_CR1_DFF_Pos);                                // Data frame format 8 bit is selected
 	REG_SET_BIT(pSPI->CR1, SPI_CR1_SSM_Pos);                                // Enabling software slave management
@@ -201,7 +196,6 @@ void LCD_SPI_Init(void) {
 	REG_CLR_BIT(pSPI->CR1, SPI_CR1_CPOL_Pos);                               // Setting clock polarity 0(Clock low when idle)
 	REG_CLR_BIT(pSPI->CR1, SPI_CR1_CPHA_Pos);                               // Setting clock phase 0(Capture in rising edge)
 	REG_CLR_BIT(pSPI->CR2, SPI_CR2_FRF_Pos);                                // Enabling SPI MOTOROLA mode
->>>>>>> refs/remotes/origin/main
 }
 
 
