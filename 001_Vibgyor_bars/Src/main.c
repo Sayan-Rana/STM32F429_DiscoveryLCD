@@ -73,7 +73,7 @@ void SystemClock_Setup(void) {
 	//5. Setting up the AHB and APBx clocks
 	REG_SET_VAL(pRCC->CFGR, 0x04u, 0x07u, RCC_CFGR_PPRE2_Pos);		/* APB2 prescaler */
 	REG_SET_VAL(pRCC->CFGR, 0x05u, 0x07u, RCC_CFGR_PPRE1_Pos);		/* APB1 prescaler */
-	REG_SET_VAL(pRCC->CFGR, 0x00u, 0x0Fu, RCC_CFGR_HPRE_Pos);		/* AHB prescaller */
+	REG_SET_VAL(pRCC->CFGR, 0x00u, 0x0Fu, RCC_CFGR_HPRE_Pos);		/* AHB prescaler */
 
 	//6. Turning on the PLL and wait for PLLCLK ready
 	REG_SET_BIT(pRCC->CR, RCC_CR_PLLON_Pos);				/* Turning on PLL */
