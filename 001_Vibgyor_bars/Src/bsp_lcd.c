@@ -120,6 +120,12 @@ void LCD_Pin_Init(void) {
 	REG_CLR_BIT(pGPIOF->OTYPER, GPIO_OTYPER_OT9_Pos);                       // Output type output push pull
 	REG_SET_VAL(pGPIOF->OSPEEDR, 0x02u, 0x03u, GPIO_OSPEEDR_OSPEED9_Pos);   // Speed as high speed
 	REG_SET_VAL(pGPIOF->AFR[1], 0x05u, 0x0Fu, GPIO_AFRH_AFSEL9_Pos);        // Alternate function 5 (SPI5 DATA)
+
+	/* Lets set the initial state of the RESX, CSX and DCX pins */
+	REG_SET_BIT(pGPIOA->ODR, GPIO_ODR_OD7_Pos);                             // Setting RESX pin high
+	REG_SET_BIT(pGPIOC->ODR, GPIO_ODR_OD2_Pos);                             // Setting CSX pin high
+	REG_SET_BIT(pGPIOD->ODR, GPIO_ODR_OD13_Pos);                            // Setting DCX pin high
+
 }
 
 
