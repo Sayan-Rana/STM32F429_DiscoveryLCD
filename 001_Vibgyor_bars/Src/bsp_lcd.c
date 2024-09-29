@@ -5,6 +5,7 @@
  *      Author: sayan
  */
 
+#include "bsp_lcd.h"
 #include "stm32f429xx.h"
 #include "reg_util.h"
 #include "ili9341_reg.h"
@@ -18,24 +19,6 @@
 #define MADCTL_RGB 0x00 ///< Red-Green-Blue pixel order
 #define MADCTL_BGR 0x08 ///< Blue-Green-Red pixel order
 #define MADCTL_MH 0x04  ///< LCD refresh right to left
-
-
-#define GPIO_PIN_0			0U
-#define GPIO_PIN_1			1U
-#define GPIO_PIN_2			2U
-#define GPIO_PIN_3			3U
-#define GPIO_PIN_4			4U
-#define GPIO_PIN_5			5U
-#define GPIO_PIN_6			6U
-#define GPIO_PIN_7			7U
-#define GPIO_PIN_8			8U
-#define GPIO_PIN_9			9U
-#define GPIO_PIN_10			10U
-#define GPIO_PIN_11			11U
-#define GPIO_PIN_12			12U
-#define GPIO_PIN_13			13U
-#define GPIO_PIN_14			14U
-#define GPIO_PIN_15			15U
 
 
 /* Defining all the LCD signals */
