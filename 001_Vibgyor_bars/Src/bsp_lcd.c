@@ -6,8 +6,6 @@
  */
 
 #include "bsp_lcd.h"
-#include "stm32f429xx.h"
-#include "reg_util.h"
 #include "ili9341_reg.h"
 
 
@@ -20,6 +18,71 @@
 #define MADCTL_BGR 0x08 ///< Blue-Green-Red pixel order
 #define MADCTL_MH 0x04  ///< LCD refresh right to left
 
+
+/* Storing all LTDC IO ports */
+const GPIO_TypeDef* ltdc_io_ports[] = {
+		LCD_DATA_R2_PORT,
+		LCD_DATA_R3_PORT,
+		LCD_DATA_R4_PORT,
+		LCD_DATA_R5_PORT,
+		LCD_DATA_R6_PORT,
+		LCD_DATA_R7_PORT,
+
+		LCD_DATA_G2_PORT,
+		LCD_DATA_G3_PORT,
+		LCD_DATA_G4_PORT,
+		LCD_DATA_G5_PORT,
+		LCD_DATA_G6_PORT,
+		LCD_DATA_G7_PORT,
+
+		LCD_DATA_B2_PORT,
+		LCD_DATA_B3_PORT,
+		LCD_DATA_B4_PORT,
+		LCD_DATA_B5_PORT,
+		LCD_DATA_B6_PORT,
+		LCD_DATA_B7_PORT,
+
+		LCD_VSYNC_PORT,
+		LCD_HSYNC_PORT,
+		LCD_DE_PORT,
+		LCD_DOTCLK_PORT
+};
+
+
+/* Storing all LTDC IO pins */
+const uint8_t ltdc_io_pins[] = {
+		LCD_DATA_R2_PIN,
+		LCD_DATA_R3_PIN,
+		LCD_DATA_R4_PIN,
+		LCD_DATA_R5_PIN,
+		LCD_DATA_R6_PIN,
+		LCD_DATA_R7_PIN,
+
+		LCD_DATA_G2_PIN,
+		LCD_DATA_G3_PIN,
+		LCD_DATA_G4_PIN,
+		LCD_DATA_G5_PIN,
+		LCD_DATA_G6_PIN,
+		LCD_DATA_G7_PIN,
+
+		LCD_DATA_B2_PIN,
+		LCD_DATA_B3_PIN,
+		LCD_DATA_B4_PIN,
+		LCD_DATA_B5_PIN,
+		LCD_DATA_B6_PIN,
+		LCD_DATA_B7_PIN,
+
+		LCD_VSYNC_PIN,
+		LCD_HSYNC_PIN,
+		LCD_DE_PIN,
+		LCD_DOTCLK_PIN
+};
+
+
+/* TOTAL PIN USED FOR THE LCD */
+#define LCD_TOTAL_PINS         (sizeof(ltdc_io_pins) / sizeof(ltdc_io_pins[0]))
+
+const uint8_t total_ltdc_pins = LCD_TOTAL_PINS;
 
 /* Defining all the LCD signals */
 
