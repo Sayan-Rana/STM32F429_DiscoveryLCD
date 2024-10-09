@@ -135,7 +135,7 @@ static void LCD_Pin_Init(void);
 static void LCD_SPI_Init(void);
 static void LCD_Reset(void);
 static void LCD_Config(void);
-static void LCD_SPI_Enable(void);
+//static void LCD_SPI_Enable(void);
 static void LCD_Write_Cmd(uint8_t cmd);
 static void LCD_Write_Data(uint8_t *pData, uint32_t len);
 void delay_50ms(void);
@@ -144,7 +144,6 @@ void delay_50ms(void);
 void BSP_LCD_Init(void) {
 	LCD_Pin_Init();
 	LCD_SPI_Init();
-	LCD_SPI_Enable();
 	LCD_Reset();
 	LCD_Config();
 }
@@ -194,16 +193,6 @@ void LCD_Pin_Init(void) {
 	REG_CLR_BIT(pGPIOF->OTYPER, GPIO_OTYPER_OT9_Pos);						// Output type output push pull
 	REG_SET_VAL(pGPIOF->OSPEEDR, 0x02u, 0x03u, GPIO_OSPEEDR_OSPEED9_Pos);	// Speed as high speed
 	REG_SET_VAL(pGPIOF->AFR[1], 0x05u, 0x0Fu, GPIO_AFRH_AFSEL9_Pos);		// Alternate function 5 (SPI5 DATA)
-
-	/* Lets set the initial state of the RESX, CSX and DCX pins */
-	REG_SET_BIT(pGPIOA->ODR, GPIO_ODR_OD7_Pos);                             // Setting RESX pin high
-	REG_SET_BIT(pGPIOC->ODR, GPIO_ODR_OD2_Pos);                             // Setting CSX pin high
-	REG_SET_BIT(pGPIOD->ODR, GPIO_ODR_OD13_Pos);                            // Setting DCX pin high
-
-	REG_SET_VAL(pGPIOF->MODER, 0x02u, 0x03u, GPIO_MODER_MODER9_Pos);        // Output mode
-	REG_CLR_BIT(pGPIOF->OTYPER, GPIO_OTYPER_OT9_Pos);                       // Output type output push pull
-	REG_SET_VAL(pGPIOF->OSPEEDR, 0x02u, 0x03u, GPIO_OSPEEDR_OSPEED9_Pos);   // Speed as high speed
-	REG_SET_VAL(pGPIOF->AFR[1], 0x05u, 0x0Fu, GPIO_AFRH_AFSEL9_Pos);        // Alternate function 5 (SPI5 DATA)
 
 	/* Lets set the initial state of the RESX, CSX and DCX pins */
 	REG_SET_BIT(pGPIOA->ODR, GPIO_ODR_OD7_Pos);                             // Setting RESX pin high
@@ -409,15 +398,16 @@ void LCD_Config(void) {
 
 
 
-void LCD_SPI_Enable(void){
-	SPI_TypeDef* pSPI = SPI;
-	REG_SET_BIT(pSPI->CR1, SPI_CR1_SPE_Pos);                                // SPI enable
-}
+//void LCD_SPI_Enable(void){
+//	SPI_TypeDef* pSPI = SPI;
+//	REG_SET_BIT(pSPI->CR1, SPI_CR1_SPE_Pos);                                // SPI enable
+//}
 
 
 
 void LCD_Write_Cmd(uint8_t cmd) {
 	SPI_TypeDef *pSPI = SPI;
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_SPE_Pos);                                // SPI enable
 	LCD_CSX_LOW();                                                          // CSX pin LOW to initiate SPI communication
 	LCD_DCX_LOW();                                                          // DCX pin LOW means command
 	while(!REG_READ_BIT(pSPI->SR, SPI_SR_TXE_Pos));                         // Wait until TXE = 1 (Tx buffer is empty)
@@ -435,6 +425,7 @@ void LCD_Write_Cmd(uint8_t cmd) {
 
 void LCD_Write_Data(uint8_t *pData, uint32_t len) {
 	SPI_TypeDef *pSPI = SPI;
+	REG_SET_BIT(pSPI->CR1, SPI_CR1_SPE_Pos);                                // SPI enable
 	LCD_CSX_LOW();                                                          // CSX pin LOW to initiate data transfer
 	for(uint32_t i = 0; i < len; i++) {
 		while(!REG_READ_BIT(pSPI->SR, SPI_SR_TXE_Pos));                     // Wait until TXE = 1 (Tx buffer is empty)
