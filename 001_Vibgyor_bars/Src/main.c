@@ -25,10 +25,13 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+
 void SystemClock_Setup(void);
+void LTDC_Pin_Init(void);
 
 int main(void) {
 	SystemClock_Setup();
+	LTDC_Pin_Init();
 	BSP_LCD_Init();
     /* Loop forever even all time */
 	for(;;);
@@ -86,7 +89,49 @@ void SystemClock_Setup(void) {
 
 
 
+void LTDC_Pin_Init(void) {
 
+	/* Enabling GPIO ports clock used for LTDC peripheral */
+	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN_Pos);                               /* GPIOA clock enable */
+	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN_Pos);                               /* GPIOB clock enable */
+	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOCEN_Pos);                               /* GPIOC clock enable */
+	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIODEN_Pos);                               /* GPIOD clock enable */
+	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOFEN_Pos);                               /* GPIOF clock enable */
+	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOGEN_Pos);                               /* GPIOG clock enable */
+
+	for(int i = 0; i < total_ltdc_pins; i++) {
+		REG_SET_VAL(ltdc_io_ports[i]->MODER, 0x02u, 0x03u, (ltdc_io_pins[i] * 2u));   /* GPIO mode register as alternate function mode */
+		REG_CLR_BIT(ltdc_io_ports[i]->OTYPER, ltdc_io_pins[i]);                       /* GPIO output type register as push-pull */
+		REG_SET_VAL(ltdc_io_ports[i]->OSPEEDR, 0x02u, 0x03u, (ltdc_io_pins[i] * 2u)); /* GPIO output speed as high speed */
+	}
+
+	/* Configuring ALTERNATE FUNCTION for LTDC pins */
+	// Alternate function low register
+	REG_SET_VAL(LCD_DATA_R3_PORT->AFR[0], 0x09u, 0x0Fu, (LCD_DATA_R3_PIN * 4u));          /* LCD_R3 */
+	REG_SET_VAL(LCD_DATA_R6_PORT->AFR[0], 0x09u, 0x0Fu, (LCD_DATA_R6_PIN * 4u));          /* LCD_R6 */
+	REG_SET_VAL(LCD_DATA_R7_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DATA_R7_PIN * 4u));          /* LCD_R7 */
+	REG_SET_VAL(LCD_DATA_G2_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DATA_G2_PIN * 4u));          /* LCD_G2 */
+	REG_SET_VAL(LCD_DATA_G6_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DATA_G6_PIN * 4u));          /* LCD_G6 */
+	REG_SET_VAL(LCD_DATA_G7_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DATA_G7_PIN * 4u));          /* LCD_G7 */
+	REG_SET_VAL(LCD_DATA_B2_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DATA_B2_PIN * 4u));          /* LCD_B2 */
+	REG_SET_VAL(LCD_DATA_B5_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DATA_B5_PIN * 4u));          /* LCD_B5 */
+	REG_SET_VAL(LCD_VSYNC_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_VSYNC_PIN * 4u));              /* LCD_V-SYNC */
+	REG_SET_VAL(LCD_HSYNC_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_HSYNC_PIN * 4u));              /* LCD_H-SYNC */
+	REG_SET_VAL(LCD_DOTCLK_PORT->AFR[0], 0x0Eu, 0x0Fu, (LCD_DOTCLK_PIN * 4u));            /* LCD_D-CLK */
+
+	// Alternate function high register
+	REG_SET_VAL(LCD_DATA_R2_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_R2_PIN % 8u) * 4u));   /* LCD_R2 */
+	REG_SET_VAL(LCD_DATA_R4_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_R4_PIN % 8u) * 4u));   /* LCD_R4 */
+	REG_SET_VAL(LCD_DATA_R5_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_R5_PIN % 8u) * 4u));   /* LCD_R5 */
+	REG_SET_VAL(LCD_DATA_G3_PORT->AFR[1], 0x09u, 0x0Fu, ((LCD_DATA_G3_PIN % 8u) * 4u));   /* LCD_G3 */
+	REG_SET_VAL(LCD_DATA_G4_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_G4_PIN % 8u) * 4u));   /* LCD_G4 */
+	REG_SET_VAL(LCD_DATA_G5_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_G5_PIN % 8u) * 4u));   /* LCD_G5 */
+	REG_SET_VAL(LCD_DATA_B3_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_B3_PIN % 8u) * 4u));   /* LCD_B3 */
+	REG_SET_VAL(LCD_DATA_B4_PORT->AFR[1], 0x09u, 0x0Fu, ((LCD_DATA_B4_PIN % 8u) * 4u));   /* LCD_B4 */
+	REG_SET_VAL(LCD_DATA_B6_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_B6_PIN % 8u) * 4u));   /* LCD_B6 */
+	REG_SET_VAL(LCD_DATA_B7_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DATA_B7_PIN % 8u) * 4u));   /* LCD_B7 */
+	REG_SET_VAL(LCD_DE_PORT->AFR[1], 0x0Eu, 0x0Fu, ((LCD_DE_PIN % 8u) * 4u));             /* LCD_DE */
+}
 
 
 

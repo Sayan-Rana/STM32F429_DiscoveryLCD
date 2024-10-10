@@ -13,11 +13,11 @@
 #include "board.h"
 
 /* Array of type GPIO_Typedef* to store all LTDC IO ports */
-extern const GPIO_TypeDef* ltdc_io_port[];
+extern GPIO_TypeDef* ltdc_io_ports[];
 /* Array of type uint8_t to store all LTDC IO pins */
 extern const uint8_t ltdc_io_pins[];
 /* Store total number of pins, used in LTDC peripheral */
-extern const uint8_t ltdc_total_pin;
+extern const uint8_t total_ltdc_pins;
 
 void BSP_LCD_Init(void);
 

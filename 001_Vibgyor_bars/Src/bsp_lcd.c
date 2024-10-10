@@ -20,7 +20,7 @@
 
 
 /* Storing all LTDC IO ports */
-const GPIO_TypeDef* ltdc_io_ports[] = {
+GPIO_TypeDef* ltdc_io_ports[] = {
 		LCD_DATA_R2_PORT,
 		LCD_DATA_R3_PORT,
 		LCD_DATA_R4_PORT,
