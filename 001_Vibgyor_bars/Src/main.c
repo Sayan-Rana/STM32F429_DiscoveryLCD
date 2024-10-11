@@ -28,11 +28,13 @@
 
 void SystemClock_Setup(void);
 void LTDC_Pin_Init(void);
+void LTDC_Init(void);
 
 int main(void) {
 	SystemClock_Setup();
-	LTDC_Pin_Init();
 	BSP_LCD_Init();
+	LTDC_Pin_Init();
+	LTDC_Init();
     /* Loop forever even all time */
 	for(;;);
 }
@@ -71,6 +73,8 @@ void SystemClock_Setup(void) {
 	REG_SET_VAL(pRCC->PLLSAICFGR, 0x02u, 0x07u, RCC_PLLSAICFGR_PLLSAIR_Pos);	/* PLLSAI R */
 	/* LCD CLK 6.25MHz */
 	REG_SET_VAL(pRCC->DCKCFGR, 0x02u, 0x03u, RCC_DCKCFGR_PLLSAIDIVR_Pos);		/* DIV */
+	REG_SET_BIT(pRCC->CR,RCC_CR_PLLSAION_Pos);
+	while(!REG_READ_BIT(pRCC->CR,RCC_CR_PLLSAIRDY_Pos));
 	/*///////////////////////////////////////////////////////////////////////////////////////////////*/
 
 	//5. Setting up the AHB and APBx clocks
@@ -91,7 +95,7 @@ void SystemClock_Setup(void) {
 
 void LTDC_Pin_Init(void) {
 
-	/* Enabling GPIO ports clock used for LTDC peripheral */
+	/* Enable the peripheral clock of GPIO ports involved in LTDC interface */
 	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN_Pos);                               /* GPIOA clock enable */
 	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN_Pos);                               /* GPIOB clock enable */
 	REG_SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOCEN_Pos);                               /* GPIOC clock enable */
@@ -135,6 +139,42 @@ void LTDC_Pin_Init(void) {
 
 
 
+void LTDC_Init(void) {
+	LTDC_TypeDef* pLTDC = LTDC;
+
+	/* Enable LTDC peripheral clock */
+	REG_SET_BIT(RCC->APB2ENR, RCC_APB2ENR_LTDCEN_Pos);
+
+	/* Configure horizontal synchronization timing */
+	// Horizontal sync width
+	REG_SET_VAL(pLTDC->SSCR, (BSP_LCD_HSW - 1), 0xFFFu, LTDC_SSCR_HSW_Pos);
+	// Accumulated horizontal back porch
+	REG_SET_VAL(pLTDC->BPCR, (BSP_LCD_HSW + BSP_LCD_HBP - 1), 0xFFFu, LTDC_BPCR_AHBP_Pos);
+	// Accumulated active width
+	REG_SET_VAL(pLTDC->AWCR, (BSP_LCD_HSW + BSP_LCD_HBP + BSP_LCD_ACTIVE_WIDTH - 1), 0xFFFu, LTDC_AWCR_AAW_Pos);
+	// Accumulated total width
+	REG_SET_VAL(pLTDC->TWCR, (BSP_LCD_HSW + BSP_LCD_HBP + BSP_LCD_ACTIVE_WIDTH + BSP_LCD_HFP - 1), 0xFFFu, LTDC_TWCR_TOTALW_Pos);
+
+	/* Configure vertical synchronization timing */
+	// Vertical sync width
+	REG_SET_VAL(pLTDC->SSCR, (BSP_LCD_VSW - 1), 0x7FFu, LTDC_SSCR_VSH_Pos);
+	// Accumulated vertical back porch
+	REG_SET_VAL(pLTDC->BPCR, (BSP_LCD_VSW + BSP_LCD_VBP - 1), 0x7FFu, LTDC_BPCR_AVBP_Pos);
+	// Accumulated active height
+	REG_SET_VAL(pLTDC->AWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HIGHT - 1), 0x7FFu, LTDC_AWCR_AAH_Pos);
+	// Accumulated total height
+	REG_SET_VAL(pLTDC->TWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HIGHT + BSP_LCD_VFP - 1), 0x7FFu, LTDC_TWCR_TOTALH_Pos);
+
+
+	/* Configure the background color(RED) */
+	REG_SET_VAL(pLTDC->BCCR, 0xFF0000u, 0xFFFFFFu, LTDC_BCCR_BCBLUE_Pos);
+
+	/* Configure default polarity for HSYNC, VSYNC, DOT_CLK, DE */
+	// We will use default polarity
+
+	/* Enable the LTDC peripheral */
+	REG_SET_BIT(pLTDC->GCR, LTDC_GCR_LTDCEN_Pos);
+}
 
 
 
