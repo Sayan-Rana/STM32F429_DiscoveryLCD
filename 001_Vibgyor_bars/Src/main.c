@@ -29,12 +29,14 @@
 void SystemClock_Setup(void);
 void LTDC_Pin_Init(void);
 void LTDC_Init(void);
+void LTDC_Layer_Init(LTDC_Layer_TypeDef *pLayer);
 
 int main(void) {
 	SystemClock_Setup();
 	BSP_LCD_Init();
 	LTDC_Pin_Init();
 	LTDC_Init();
+	LTDC_Layer_Init(LTDC_Layer1);
     /* Loop forever even all time */
 	for(;;);
 }
@@ -162,9 +164,9 @@ void LTDC_Init(void) {
 	// Accumulated vertical back porch
 	REG_SET_VAL(pLTDC->BPCR, (BSP_LCD_VSW + BSP_LCD_VBP - 1), 0x7FFu, LTDC_BPCR_AVBP_Pos);
 	// Accumulated active height
-	REG_SET_VAL(pLTDC->AWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HIGHT - 1), 0x7FFu, LTDC_AWCR_AAH_Pos);
+	REG_SET_VAL(pLTDC->AWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HEIGHT - 1), 0x7FFu, LTDC_AWCR_AAH_Pos);
 	// Accumulated total height
-	REG_SET_VAL(pLTDC->TWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HIGHT + BSP_LCD_VFP - 1), 0x7FFu, LTDC_TWCR_TOTALH_Pos);
+	REG_SET_VAL(pLTDC->TWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HEIGHT + BSP_LCD_VFP - 1), 0x7FFu, LTDC_TWCR_TOTALH_Pos);
 
 
 	/* Configure the background color(RED) */
@@ -180,5 +182,62 @@ void LTDC_Init(void) {
 
 
 
+void LTDC_Layer_Init(LTDC_Layer_TypeDef *pLayer) {
 
+	uint32_t temp1 = 0, temp2 = 0, temp3 = 0;
+	LTDC_TypeDef *pLTDC = LTDC;
+
+	//1. Configure the pixel format of the layer's frame buffer
+	REG_SET_VAL(pLayer->PFCR, 0x02u, 0x07u, LTDC_LxPFCR_PF_Pos);
+
+	//2. Configure the constant alpha and blending factor
+	REG_SET_VAL(pLayer->CACR, 0xFFu, 0xFFu, LTDC_LxCACR_CONSTA_Pos);
+	REG_SET_VAL(temp1, 0x04u, 0x07u, LTDC_LxBFCR_BF1_Pos);
+	REG_SET_VAL(temp1, 0x05u, 0x07, LTDC_LxBFCR_BF2_Pos);
+	REG_WRITE(pLayer->BFCR, temp1);
+
+	//3. Configure the layer position (Windowing)
+
+	                     /* WHSTART */
+	temp1 = REG_READ_VAL(pLTDC->BPCR, 0xFFFu, LTDC_BPCR_AHBP_Pos);     // Read AHBP
+	temp1 = temp1 + 1 + 0;                                             // Calculate WHSTART
+	REG_SET_VAL(temp2, temp1, 0XFFFu, LTDC_LxWHPCR_WHSTPOS_Pos);       // Preparing temp2
+
+	                     /* WHSTOP */
+	temp1 = temp1 + BSP_LCD_LAYER_WIDTH;                               // Calculating WHSTOP
+	temp3 = REG_READ_VAL(pLTDC->AWCR, 0xFFFu, LTDC_AWCR_AAW_Pos);      // Reading AAW from LTDC_AWCR register
+	temp1 = (temp1 > temp3) ? temp3 : temp1;                           // Check if WHSTOP is grated than AAW or not
+	REG_SET_VAL(temp2, temp1, 0xFFFu, LTDC_LxWHPCR_WHSPPOS_Pos);       // Preparing temp2
+
+	/* Writing the layer horizontal windowing register */
+	REG_WRITE(pLayer->WHPCR, temp2);
+
+	                     /* WVSTART */
+	temp1 = 0, temp2 = 0, temp3 = 0;
+	temp1 = REG_READ_VAL(pLTDC->BPCR, 0x7FFu, LTDC_BPCR_AVBP_Pos);     // Read AVBP
+	temp1 = temp1 + 1 + 0;                                             // Calculate WVSTART
+	REG_SET_VAL(temp2, temp1, 0x7FF, LTDC_LxWVPCR_WVSTPOS_Pos);        // Preparing temp2
+
+	                     /* WVSTOP */
+	temp1 = temp1 + BSP_LCD_LAYER_HEIGHT;                              // Calculating WVSTOP
+	temp3 = REG_READ_VAL(pLTDC->AWCR, 0x7FFu, LTDC_AWCR_AAH_Pos);      // Reading AAH from LTDC_AWCR
+	temp1 = (temp1 > temp3) ? temp3 : temp1;                           // Check if WVSTOP is grater than  AAH or not
+	REG_SET_VAL(temp2, temp1, 0x7FFu, LTDC_LxWVPCR_WVSPPOS_Pos);       // Preparing temp2
+
+	/* Writing the layer vertical windowing register */
+	REG_WRITE(pLayer->WVPCR, temp2);
+
+	//4. Configure the frame buffer address
+	REG_WRITE(pLayer->CFBAR, bsp_lcd_get_fb_address());
+
+	//5. Configure the default color of the layer (Optional)
+
+	//6. Configure the pitch, line length and line number of the frame buffer
+
+	//7. Activate immediate reload
+	REG_SET_BIT(LTDC->SRCR, LTDC_SRCR_IMR_Pos);
+
+	//8. Enable the layer
+	REG_SET_BIT(pLayer->CR, LTDC_LxCR_LEN_Pos);
+}
 

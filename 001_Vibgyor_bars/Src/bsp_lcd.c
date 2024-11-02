@@ -301,13 +301,6 @@ void LCD_Config(void) {
 	params[0]= 0XB7;
 	LCD_Write_Data(params, 1);
 
-	uint8_t m;
-	m = MADCTL_MV | MADCTL_MY| MADCTL_BGR;
-
-	LCD_Write_Cmd(ILI9341_MAC);    // Memory Access Control <Landscape setting>
-	params[0]= m;
-	LCD_Write_Data(params, 1);
-
 	LCD_Write_Cmd(ILI9341_PIXEL_FORMAT);
 	params[0]= 0x55; //select RGB565
 	LCD_Write_Data(params, 1);
@@ -366,20 +359,6 @@ void LCD_Config(void) {
 	params[14]= 0x05;
 	LCD_Write_Data(params, 15);
 
-	LCD_Write_Cmd(ILI9341_RASET); //page address set
-	params[0]= 0x00;
-	params[1]= 0x00;
-	params[2]= 0x00;
-	params[3]= 0xf0; //240 rows = 0xf0
-	LCD_Write_Data(params, 4);
-
-	LCD_Write_Cmd(ILI9341_CASET);
-	params[0]= 0x00;
-	params[1]= 0x00;
-	params[2]= 0x01;
-	params[3]= 0x40; //320 columns = 0x140
-	LCD_Write_Data(params, 4);
-
 	LCD_Write_Cmd(ILI9341_RGB_INTERFACE);
 	params[0] = 0xC2; //Data is fetched during falling edge of DOTCLK
 	LCD_Write_Data(params, 1);
@@ -394,6 +373,50 @@ void LCD_Config(void) {
 	delay_50ms();
 	delay_50ms();
 	LCD_Write_Cmd(ILI9341_DISPLAY_ON); //display on
+
+#if (LCD_ORIENTATION == BSP_LCD_PORTRAIT)
+
+	/////////////////// PORTRAIT MODE ////////////////////
+	LCD_Write_Cmd(ILI9341_RASET); //page address set
+	params[0]= 0x00;
+	params[1]= 0x00;
+	params[2]= 0x01;
+	params[3]= 0x40; //320 rows = 0x140
+	LCD_Write_Data(params, 4);
+
+	LCD_Write_Cmd(ILI9341_CASET);
+	params[0]= 0x00;
+	params[1]= 0x00;
+	params[2]= 0x00;
+	params[3]= 0xf0; //240 columns = 0xf0
+	LCD_Write_Data(params, 4);
+
+	params[0] = MADCTL_MY| MADCTL_MX| MADCTL_BGR;  /* Memory Access Control <portrait setting> */
+#elif (LCD_ORIENTATION == BSP_LCD_LANDSCAPE)
+
+	/////////////////// LANDSCAPE MODE /////////////////////
+	LCD_Write_Cmd(ILI9341_RASET); //page address set
+	params[0]= 0x00;
+	params[1]= 0x00;
+	params[2]= 0x00;
+	params[3]= 0xf0; //240 rows = 0xf0
+	LCD_Write_Data(params, 4);
+
+	LCD_Write_Cmd(ILI9341_CASET);
+	params[0]= 0x00;
+	params[1]= 0x00;
+	params[2]= 0x01;
+	params[3]= 0x40; //320 columns = 0x140
+	LCD_Write_Data(params, 4);
+
+	params[0] = MADCTL_MV | MADCTL_MY | MADCTL_BGR; /*Memory Access Control <Landscape setting>*/
+
+#else
+	#error"Select display orientation"
+#endif
+
+	LCD_Write_Cmd(ILI9341_MAC);    // Memory Access Control command
+	LCD_Write_Data(params, 1);
 }
 
 
