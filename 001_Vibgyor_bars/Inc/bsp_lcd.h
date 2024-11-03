@@ -76,6 +76,7 @@ extern const uint8_t total_ltdc_pins;
 
 void BSP_LCD_Init(void);
 uint32_t bsp_lcd_get_fb_address(void);
+void bsp_lcd_set_fb_background_color(uint32_t rgb888);
 
 
 #endif /* BSP_LCD_H_ */

@@ -26,6 +26,20 @@
 #endif
 
 
+
+#define RGB888(r,g,b)  (((r) << 16) | ((g) << 8) | (b))
+
+#define VIOLET   	RGB888(148,0,211)
+#define INDIGO   	RGB888(75,0,130)
+#define BLUE   		RGB888(0,0,255)
+#define GREEN   	RGB888(0,255,0)
+#define YELLOW   	RGB888(255,255,0)
+#define ORANGE   	RGB888(255,127,0)
+#define RED   		RGB888(255,0,0)
+#define WHITE   	RGB888(255,255,255)
+#define BLACK		RGB888(0,0,0)
+
+
 void SystemClock_Setup(void);
 void LTDC_Pin_Init(void);
 void LTDC_Init(void);
@@ -36,6 +50,7 @@ int main(void) {
 	BSP_LCD_Init();
 	LTDC_Pin_Init();
 	LTDC_Init();
+	bsp_lcd_set_fb_background_color(ORANGE);
 	LTDC_Layer_Init(LTDC_Layer1);
     /* Loop forever even all time */
 	for(;;);
@@ -181,7 +196,6 @@ void LTDC_Init(void) {
 
 
 
-
 void LTDC_Layer_Init(LTDC_Layer_TypeDef *pLayer) {
 
 	uint32_t temp1 = 0, temp2 = 0, temp3 = 0;
@@ -233,6 +247,18 @@ void LTDC_Layer_Init(LTDC_Layer_TypeDef *pLayer) {
 	//5. Configure the default color of the layer (Optional)
 
 	//6. Configure the pitch, line length and line number of the frame buffer
+	temp1 = 0, temp2 = 0, temp3 = 0;
+	/* Pitch and line length configuration */
+	temp1 = (BSP_LCD_LAYER_WIDTH * 2u);                                // Calculating Pitch
+	REG_SET_VAL(temp3, temp1, 0x1FFFu, LTDC_LxCFBLR_CFBP_Pos);         // Preparing temp3
+	temp2 = temp1 + 3;                                                 // Line length
+	REG_SET_VAL(temp3, temp2, 0x1FFFu, LTDC_LxCFBLR_CFBLL_Pos);        // Preparing temp3
+
+	/* Writing to LxCFBLR register */
+	REG_WRITE(pLayer->CFBLR, temp3);
+
+	/* Line number configuration */
+	REG_SET_VAL(pLayer->CFBLNR, BSP_LCD_LAYER_HEIGHT, 0x7FFu, LTDC_LxCFBLNR_CFBLNBR_Pos);
 
 	//7. Activate immediate reload
 	REG_SET_BIT(LTDC->SRCR, LTDC_SRCR_IMR_Pos);
