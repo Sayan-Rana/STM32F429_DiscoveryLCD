@@ -164,9 +164,9 @@ void LTDC_Init(void) {
 	// Accumulated vertical back porch
 	REG_SET_VAL(pLTDC->BPCR, (BSP_LCD_VSW + BSP_LCD_VBP - 1), 0x7FFu, LTDC_BPCR_AVBP_Pos);
 	// Accumulated active height
-	REG_SET_VAL(pLTDC->AWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HEIGHT - 1), 0x7FFu, LTDC_AWCR_AAH_Pos);
+	REG_SET_VAL(pLTDC->AWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_HEIGHT - 1), 0x7FFu, LTDC_AWCR_AAH_Pos);
 	// Accumulated total height
-	REG_SET_VAL(pLTDC->TWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_ACTIVE_HEIGHT + BSP_LCD_VFP - 1), 0x7FFu, LTDC_TWCR_TOTALH_Pos);
+	REG_SET_VAL(pLTDC->TWCR, (BSP_LCD_VSW + BSP_LCD_VBP + BSP_LCD_HEIGHT + BSP_LCD_VFP - 1), 0x7FFu, LTDC_TWCR_TOTALH_Pos);
 
 
 	/* Configure the background color(RED) */

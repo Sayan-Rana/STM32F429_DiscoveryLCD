@@ -38,7 +38,7 @@
 #define BSP_LCD_ACTIVE_HEIGHT       BSP_LCD_HEIGHT
 #elif (LCD_ORIENTATION == BSP_LCD_LANDSCAPE)
 #define BSP_LCD_ACTIVE_WIDTH        BSP_LCD_HEIGHT
-#define BSP_LCD_ACTIVE_HEIGHT       (BSP_LCD_WIDTH + 80u)
+#define BSP_LCD_ACTIVE_HEIGHT       BSP_LCD_WIDTH
 #else
 	#error"Select display orientation"
 #endif
