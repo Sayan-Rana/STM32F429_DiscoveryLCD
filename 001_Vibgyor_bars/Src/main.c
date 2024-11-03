@@ -41,7 +41,7 @@ int main(void) {
 	for(;;);
 }
 
-/* 1 Line added */
+
 
 void SystemClock_Setup(void) {
 	RCC_TypeDef* pRCC = RCC;
