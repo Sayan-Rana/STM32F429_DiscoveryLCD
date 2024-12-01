@@ -216,30 +216,30 @@ void LTDC_Layer_Init(LTDC_Layer_TypeDef *pLayer) {
 
 	                     /* WHSTART */
 	temp1 = 0;
-	uint32_t AHBP = REG_READ_VAL(pLTDC->BPCR, 0xFFFu, LTDC_BPCR_AHBP_Pos);   // Read AHBP
-	uint32_t WHSTART = AHBP + BSP_LTDC_LAYER_H_START + 1;                    // Calculate WHSTART
-	REG_SET_VAL(temp1, WHSTART, 0XFFFu, LTDC_LxWHPCR_WHSTPOS_Pos);           // Preparing temp2
+	uint32_t AHBP = REG_READ_VAL(pLTDC->BPCR, 0xFFFu, LTDC_BPCR_AHBP_Pos);       // Read AHBP
+	uint32_t WHSTART = AHBP + BSP_LTDC_LAYER_H_START + 1;                        // Calculate WHSTART
+	REG_SET_VAL(temp1, WHSTART, 0XFFFu, LTDC_LxWHPCR_WHSTPOS_Pos);               // Preparing temp2
 
 	                     /* WHSTOP */
-	uint32_t WHSTOP = AHBP + BSP_LTDC_LAYER_H_START + BSP_LCD_LAYER_WIDTH + 1;    // Calculating WHSTOP
-	uint32_t AAW = REG_READ_VAL(pLTDC->AWCR, 0xFFFu, LTDC_AWCR_AAW_Pos);      // Reading AAW from LTDC_AWCR register
-	WHSTOP = (WHSTOP > AAW) ? AAW : WHSTOP;                           // Check if WHSTOP is grated than AAW or not
-	REG_SET_VAL(temp1, WHSTOP, 0xFFFu, LTDC_LxWHPCR_WHSPPOS_Pos);       // Preparing temp2
+	uint32_t WHSTOP = AHBP + BSP_LTDC_LAYER_H_START + BSP_LCD_LAYER_WIDTH + 1;   // Calculating WHSTOP
+	uint32_t AAW = REG_READ_VAL(pLTDC->AWCR, 0xFFFu, LTDC_AWCR_AAW_Pos);         // Reading AAW from LTDC_AWCR register
+	WHSTOP = (WHSTOP > AAW) ? AAW : WHSTOP;                                      // Check if WHSTOP is grated than AAW or not
+	REG_SET_VAL(temp1, WHSTOP, 0xFFFu, LTDC_LxWHPCR_WHSPPOS_Pos);                // Preparing temp2
 
 	/* Writing the layer horizontal windowing register */
 	REG_WRITE(pLayer->WHPCR, temp1);
 
 	                     /* WVSTART */
 	temp1 = 0;
-	uint32_t AVBP = REG_READ_VAL(pLTDC->BPCR, 0x7FFu, LTDC_BPCR_AVBP_Pos);     // Read AVBP
-	uint32_t WVSTART = AVBP + BSP_LTDC_LAYER_V_START + 1;                                             // Calculate WVSTART
-	REG_SET_VAL(temp1, WVSTART, 0x7FFu, LTDC_LxWVPCR_WVSTPOS_Pos);        // Preparing temp2
+	uint32_t AVBP = REG_READ_VAL(pLTDC->BPCR, 0x7FFu, LTDC_BPCR_AVBP_Pos);       // Read AVBP
+	uint32_t WVSTART = AVBP + BSP_LTDC_LAYER_V_START + 1;                        // Calculate WVSTART
+	REG_SET_VAL(temp1, WVSTART, 0x7FFu, LTDC_LxWVPCR_WVSTPOS_Pos);               // Preparing temp2
 
 	                     /* WVSTOP */
-	uint32_t WVSTOP = AVBP + BSP_LTDC_LAYER_V_START + BSP_LCD_LAYER_HEIGHT + 1;                              // Calculating WVSTOP
-	uint32_t AAH = REG_READ_VAL(pLTDC->AWCR, 0x7FFu, LTDC_AWCR_AAH_Pos);      // Reading AAH from LTDC_AWCR
-	WVSTOP = (WVSTOP > AAH) ? AAH : WVSTOP;                           // Check if WVSTOP is grater than  AAH or not
-	REG_SET_VAL(temp1, WVSTOP, 0x7FFu, LTDC_LxWVPCR_WVSPPOS_Pos);       // Preparing temp2
+	uint32_t WVSTOP = AVBP + BSP_LTDC_LAYER_V_START + BSP_LCD_LAYER_HEIGHT + 1;  // Calculating WVSTOP
+	uint32_t AAH = REG_READ_VAL(pLTDC->AWCR, 0x7FFu, LTDC_AWCR_AAH_Pos);         // Reading AAH from LTDC_AWCR
+	WVSTOP = (WVSTOP > AAH) ? AAH : WVSTOP;                                      // Check if WVSTOP is grater than  AAH or not
+	REG_SET_VAL(temp1, WVSTOP, 0x7FFu, LTDC_LxWVPCR_WVSPPOS_Pos);                // Preparing temp2
 
 	/* Writing the layer vertical windowing register */
 	REG_WRITE(pLayer->WVPCR, temp1);
@@ -252,10 +252,10 @@ void LTDC_Layer_Init(LTDC_Layer_TypeDef *pLayer) {
 
 	//6. Configure the pitch, line length and line number of the frame buffer
 	/* Pitch and line length configuration */
-	uint32_t pitch = (BSP_LCD_LAYER_WIDTH * 2u);                                // Calculating Pitch
-	REG_SET_VAL(temp1, pitch, 0x1FFFu, LTDC_LxCFBLR_CFBP_Pos);         // Preparing temp1
-	uint32_t line_len = pitch + 3;                                                 // Line length
-	REG_SET_VAL(temp1, line_len, 0x1FFFu, LTDC_LxCFBLR_CFBLL_Pos);        // Preparing temp1
+	uint32_t pitch = (BSP_LCD_LAYER_WIDTH * 2u);                                 // Calculating Pitch
+	REG_SET_VAL(temp1, pitch, 0x1FFFu, LTDC_LxCFBLR_CFBP_Pos);                   // Preparing temp1
+	uint32_t line_len = pitch + 3;                                               // Line length
+	REG_SET_VAL(temp1, line_len, 0x1FFFu, LTDC_LxCFBLR_CFBLL_Pos);               // Preparing temp1
 
 	/* Writing to LxCFBLR register */
 	REG_WRITE(pLayer->CFBLR, temp1);
