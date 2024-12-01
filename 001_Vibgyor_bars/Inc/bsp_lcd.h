@@ -55,12 +55,17 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 
-////////////////////////////////// LCD Layer width and height ///////////////////////////////
+////////////////////////// LCD Layer start, stop, width and height //////////////////////////
 #define BSP_LCD_LAYER_HEIGHT        BSP_LCD_ACTIVE_HEIGHT
 #define BSP_LCD_LAYER_WIDTH         BSP_LCD_ACTIVE_WIDTH
 
 #define BSP_FB_HEIGHT               BSP_LCD_LAYER_HEIGHT
 #define BSP_FB_WIDTH                BSP_LCD_LAYER_WIDTH
+
+#define BSP_LTDC_LAYER_H_START      0u
+#define BSP_LTDC_LAYER_H_STOP       BSP_LCD_LAYER_WIDTH
+#define BSP_LTDC_LAYER_V_START      0u
+#define BSP_LTDC_LAYER_V_STOP       BSP_LCD_LAYER_HEIGHT
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 
