@@ -25,6 +25,7 @@
 #include "../../lv_conf.h"
 #include "../../hal_stm_lvgl/tft/tft.h"
 #include "../../hal_stm_lvgl/touchpad/touchpad.h"
+#include "../../lvgl/examples/lv_examples.h"
 
 /* USER CODE END Includes */
 
@@ -58,6 +59,25 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/* For STM32F429 microcontroller  LTDC clock initialization*/
+static void LTDC_Clock_Init(void)
+{
+	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+	/*
+	 * Configures LTDC clock to 6.25MHz
+	 */
+	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
+	PeriphClkInitStruct.PLLSAI.PLLSAIN = 50;
+	PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
+	PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_8;
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+	{
+	  Error_Handler();
+	}
+}
+
+
 /* USER CODE END 0 */
 
 /**
@@ -84,9 +104,13 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
+  LTDC_Clock_Init();
   lv_init();
   tft_init();
   touchpad_init();
+
+  lv_example_label_1();
 
   /* USER CODE END SysInit */
 
