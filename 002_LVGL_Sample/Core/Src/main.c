@@ -25,6 +25,7 @@
 #include "../../lv_conf.h"
 #include "../../hal_stm_lvgl/tft/tft.h"
 #include "../../hal_stm_lvgl/touchpad/touchpad.h"
+#include "../../lvgl/examples/lv_examples.h"
 
 /* USER CODE END Includes */
 
@@ -87,6 +88,8 @@ int main(void)
   lv_init();
   tft_init();
   touchpad_init();
+
+  lv_example_label_1();
 
   /* USER CODE END SysInit */
 
